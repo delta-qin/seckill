@@ -27,4 +27,6 @@ public interface SeckillGoodMapper {
     int updateByPrimaryKeySelective(SeckillGood record);
 
     int updateByPrimaryKey(SeckillGood record);
+
+    SeckillGood selectByGoodsId(Integer goodsId);
 }

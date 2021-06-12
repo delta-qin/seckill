@@ -91,9 +91,38 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserModel getUserById(Integer id) {
+    public UserModel getUserById(Integer id) throws CommonExceptionImpl {
+        UserInfo userInfo = userInfoMapper.selectByPrimaryKey(id);
+        if (userInfo == null) {
+            throw new CommonExceptionImpl(ExceptionTypeEnum.USER_NOT_EXIST);
+        }
+
+        UserPassword userPassword = userPasswordMapper.selectByUserId(id);
+        UserModel userModel = convertModelFromDo(userInfo, userPassword);
+        return userModel;
+    }
+
+    @Override
+    public UserModel getUserByPhone(String phone) throws CommonExceptionImpl {
         //userInfoMapper.selectByPrimaryKey(new UserInfoKey());
-        return null;
+        UserInfo userInfo = userInfoMapper.selectByTelPhone(phone);
+        if (userInfo == null) {
+            throw new CommonExceptionImpl(ExceptionTypeEnum.USER_NOT_EXIST);
+        }
+
+        UserModel userModel = convertModelFromDo(userInfo, null);
+        return userModel;
+    }
+
+    private UserModel convertModelFromDo(UserInfo userInfo, UserPassword userPassword) {
+        if (userInfo == null) return null;
+
+        UserModel userModel = new UserModel();
+        BeanUtils.copyProperties(userInfo, userModel);
+
+        if (userPassword != null)
+            userModel.setPassword(userPassword.getPassword());
+        return userModel;
     }
 
     private UserPassword convertPasswordFromModel(UserModel userModel) {

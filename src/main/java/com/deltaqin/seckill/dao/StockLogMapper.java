@@ -10,7 +10,7 @@ public interface StockLogMapper {
 
     int deleteByExample(StockLogExample example);
 
-    int deleteByPrimaryKey(Integer stockLogId);
+    int deleteByPrimaryKey(String stockLogId);
 
     int insert(StockLog record);
 
@@ -18,7 +18,7 @@ public interface StockLogMapper {
 
     List<StockLog> selectByExample(StockLogExample example);
 
-    StockLog selectByPrimaryKey(Integer stockLogId);
+    StockLog selectByPrimaryKey(String stockLogId);
 
     int updateByExampleSelective(@Param("record") StockLog record, @Param("example") StockLogExample example);
 

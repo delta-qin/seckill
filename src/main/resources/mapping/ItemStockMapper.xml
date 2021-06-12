@@ -82,7 +82,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from item_stock
     where stock_id = #{stockId,jdbcType=INTEGER}
@@ -134,6 +134,10 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
+  <select id="selectByGoodsId" parameterType="java.lang.Integer" resultType="com.deltaqin.seckill.dataobject.ItemStock">
+    select * from item_stock
+    where item_id = #{itemId}
+  </select>
   <update id="updateByExampleSelective" parameterType="map">
     update item_stock
     <set>
@@ -177,5 +181,10 @@
     set stock_count = #{stockCount,jdbcType=INTEGER},
       item_id = #{itemId,jdbcType=INTEGER}
     where stock_id = #{stockId,jdbcType=INTEGER}
+  </update>
+  <update id="decreaseStock">
+    update item_stock
+    set stock_count = stock_count - #{count}
+    where item_id=#{id} and stock_count >= #{count};
   </update>
 </mapper>

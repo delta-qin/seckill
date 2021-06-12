@@ -85,7 +85,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from good
     where good_id = #{goodId,jdbcType=INTEGER}
@@ -101,14 +101,14 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.deltaqin.seckill.dataobject.Good">
-    insert into good (good_id, good_name, good_price, 
+    insert into good (good_id, good_name, good_price,
       good_description, good_sales, good_img_url
       )
-    values (#{goodId,jdbcType=INTEGER}, #{goodName,jdbcType=VARCHAR}, #{goodPrice,jdbcType=DECIMAL}, 
+    values (#{goodId,jdbcType=INTEGER}, #{goodName,jdbcType=VARCHAR}, #{goodPrice,jdbcType=DECIMAL},
       #{goodDescription,jdbcType=VARCHAR}, #{goodSales,jdbcType=INTEGER}, #{goodImgUrl,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.deltaqin.seckill.dataobject.Good">
+  <insert id="insertSelective" parameterType="com.deltaqin.seckill.dataobject.Good" keyProperty="goodId" useGeneratedKeys="true">
     insert into good
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="goodId != null">

@@ -164,11 +164,11 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-    <select id="selectByTelPhone" resultType="com.deltaqin.seckill.dataobject.UserInfo">
-        select id, name, gender, age, telphone, register_mode, third_party_id
-        from user_info where telphone = #{telPhone, jdbcType=VARCHAR}
-    </select>
-    <update id="updateByExampleSelective" parameterType="map">
+  <select id="selectByTelPhone" resultType="com.deltaqin.seckill.dataobject.UserInfo">
+    select * from user_info
+    where telphone = #{telPhone}
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
     update user_info
     <set>
       <if test="record.id != null">

@@ -15,5 +15,7 @@ public interface UserService {
 
     void register(UserModel userModel) throws CommonExceptionImpl;
 
-    UserModel getUserById(Integer id);
+    UserModel getUserById(Integer id) throws CommonExceptionImpl;
+
+    UserModel getUserByPhone(String phone) throws CommonExceptionImpl;
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.deltaqin.seckill.dao.StockLogMapper">
   <resultMap id="BaseResultMap" type="com.deltaqin.seckill.dataobject.StockLog">
-    <id column="stock_log_id" jdbcType="INTEGER" property="stockLogId" />
+    <id column="stock_log_id" jdbcType="VARCHAR" property="stockLogId" />
     <result column="item_id" jdbcType="INTEGER" property="itemId" />
     <result column="item_stock_count" jdbcType="INTEGER" property="itemStockCount" />
     <result column="item_status" jdbcType="SMALLINT" property="itemStatus" />
@@ -82,15 +82,15 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from stock_log
-    where stock_log_id = #{stockLogId,jdbcType=INTEGER}
+    where stock_log_id = #{stockLogId,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from stock_log
-    where stock_log_id = #{stockLogId,jdbcType=INTEGER}
+    where stock_log_id = #{stockLogId,jdbcType=VARCHAR}
   </delete>
   <delete id="deleteByExample" parameterType="com.deltaqin.seckill.dataobject.StockLogExample">
     delete from stock_log
@@ -101,7 +101,7 @@
   <insert id="insert" parameterType="com.deltaqin.seckill.dataobject.StockLog">
     insert into stock_log (stock_log_id, item_id, item_stock_count, 
       item_status)
-    values (#{stockLogId,jdbcType=INTEGER}, #{itemId,jdbcType=INTEGER}, #{itemStockCount,jdbcType=INTEGER}, 
+    values (#{stockLogId,jdbcType=VARCHAR}, #{itemId,jdbcType=INTEGER}, #{itemStockCount,jdbcType=INTEGER}, 
       #{itemStatus,jdbcType=SMALLINT})
   </insert>
   <insert id="insertSelective" parameterType="com.deltaqin.seckill.dataobject.StockLog">
@@ -122,7 +122,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="stockLogId != null">
-        #{stockLogId,jdbcType=INTEGER},
+        #{stockLogId,jdbcType=VARCHAR},
       </if>
       <if test="itemId != null">
         #{itemId,jdbcType=INTEGER},
@@ -145,7 +145,7 @@
     update stock_log
     <set>
       <if test="record.stockLogId != null">
-        stock_log_id = #{record.stockLogId,jdbcType=INTEGER},
+        stock_log_id = #{record.stockLogId,jdbcType=VARCHAR},
       </if>
       <if test="record.itemId != null">
         item_id = #{record.itemId,jdbcType=INTEGER},
@@ -163,7 +163,7 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update stock_log
-    set stock_log_id = #{record.stockLogId,jdbcType=INTEGER},
+    set stock_log_id = #{record.stockLogId,jdbcType=VARCHAR},
       item_id = #{record.itemId,jdbcType=INTEGER},
       item_stock_count = #{record.itemStockCount,jdbcType=INTEGER},
       item_status = #{record.itemStatus,jdbcType=SMALLINT}
@@ -184,13 +184,13 @@
         item_status = #{itemStatus,jdbcType=SMALLINT},
       </if>
     </set>
-    where stock_log_id = #{stockLogId,jdbcType=INTEGER}
+    where stock_log_id = #{stockLogId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.deltaqin.seckill.dataobject.StockLog">
     update stock_log
     set item_id = #{itemId,jdbcType=INTEGER},
       item_stock_count = #{itemStockCount,jdbcType=INTEGER},
       item_status = #{itemStatus,jdbcType=SMALLINT}
-    where stock_log_id = #{stockLogId,jdbcType=INTEGER}
+    where stock_log_id = #{stockLogId,jdbcType=VARCHAR}
   </update>
 </mapper>

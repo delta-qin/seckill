@@ -131,6 +131,24 @@ public class UserController {
 
     }
 
+    @ApiOperation(value = "使用电话获取用户", notes = "获取用户")
+    @RequestMapping(value = "/getbyphone", method = RequestMethod.GET)
+    public ResultType getUserByPhone(@RequestParam(name = "phone") String phone) throws CommonExceptionImpl {
+        if (phone == null)
+            throw new CommonExceptionImpl(ExceptionTypeEnum.PARAMETER_VALIDATION_ERROR, "需要用户手机号");
+
+        UserModel userModel = userService.getUserByPhone(phone);
+
+        if (userModel == null) {
+            throw new CommonExceptionImpl(ExceptionTypeEnum.USER_NOT_EXIST);
+        }
+
+        UserVo userVo = convertFromModel(userModel);
+
+        return ResultType.create(userVo);
+
+    }
+
     private UserVo convertFromModel(UserModel userModel) {
         UserVo userVo = new UserVo();
         BeanUtils.copyProperties(userModel, userVo);

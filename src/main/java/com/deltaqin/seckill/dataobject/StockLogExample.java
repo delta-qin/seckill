@@ -114,52 +114,62 @@ public class StockLogExample {
             return (Criteria) this;
         }
 
-        public Criteria andStockLogIdEqualTo(Integer value) {
+        public Criteria andStockLogIdEqualTo(String value) {
             addCriterion("stock_log_id =", value, "stockLogId");
             return (Criteria) this;
         }
 
-        public Criteria andStockLogIdNotEqualTo(Integer value) {
+        public Criteria andStockLogIdNotEqualTo(String value) {
             addCriterion("stock_log_id <>", value, "stockLogId");
             return (Criteria) this;
         }
 
-        public Criteria andStockLogIdGreaterThan(Integer value) {
+        public Criteria andStockLogIdGreaterThan(String value) {
             addCriterion("stock_log_id >", value, "stockLogId");
             return (Criteria) this;
         }
 
-        public Criteria andStockLogIdGreaterThanOrEqualTo(Integer value) {
+        public Criteria andStockLogIdGreaterThanOrEqualTo(String value) {
             addCriterion("stock_log_id >=", value, "stockLogId");
             return (Criteria) this;
         }
 
-        public Criteria andStockLogIdLessThan(Integer value) {
+        public Criteria andStockLogIdLessThan(String value) {
             addCriterion("stock_log_id <", value, "stockLogId");
             return (Criteria) this;
         }
 
-        public Criteria andStockLogIdLessThanOrEqualTo(Integer value) {
+        public Criteria andStockLogIdLessThanOrEqualTo(String value) {
             addCriterion("stock_log_id <=", value, "stockLogId");
             return (Criteria) this;
         }
 
-        public Criteria andStockLogIdIn(List<Integer> values) {
+        public Criteria andStockLogIdLike(String value) {
+            addCriterion("stock_log_id like", value, "stockLogId");
+            return (Criteria) this;
+        }
+
+        public Criteria andStockLogIdNotLike(String value) {
+            addCriterion("stock_log_id not like", value, "stockLogId");
+            return (Criteria) this;
+        }
+
+        public Criteria andStockLogIdIn(List<String> values) {
             addCriterion("stock_log_id in", values, "stockLogId");
             return (Criteria) this;
         }
 
-        public Criteria andStockLogIdNotIn(List<Integer> values) {
+        public Criteria andStockLogIdNotIn(List<String> values) {
             addCriterion("stock_log_id not in", values, "stockLogId");
             return (Criteria) this;
         }
 
-        public Criteria andStockLogIdBetween(Integer value1, Integer value2) {
+        public Criteria andStockLogIdBetween(String value1, String value2) {
             addCriterion("stock_log_id between", value1, value2, "stockLogId");
             return (Criteria) this;
         }
 
-        public Criteria andStockLogIdNotBetween(Integer value1, Integer value2) {
+        public Criteria andStockLogIdNotBetween(String value1, String value2) {
             addCriterion("stock_log_id not between", value1, value2, "stockLogId");
             return (Criteria) this;
         }

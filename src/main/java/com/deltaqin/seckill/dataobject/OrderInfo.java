@@ -1,11 +1,12 @@
 package com.deltaqin.seckill.dataobject;
 
 import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 public class OrderInfo implements Serializable {
-    private Integer orderId;
+    private String orderId;
 
     private Integer userId;
 
@@ -24,11 +25,11 @@ public class OrderInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Integer getOrderId() {
+    public String getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Integer orderId) {
+    public void setOrderId(String orderId) {
         this.orderId = orderId;
     }
 

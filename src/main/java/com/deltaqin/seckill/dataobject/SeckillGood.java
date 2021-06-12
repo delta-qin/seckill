@@ -16,6 +16,8 @@ public class SeckillGood implements Serializable {
 
     private BigDecimal seckillPrice;
 
+    private Integer itemId;
+
     private static final long serialVersionUID = 1L;
 
     public Integer getSecId() {
@@ -58,6 +60,14 @@ public class SeckillGood implements Serializable {
         this.seckillPrice = seckillPrice;
     }
 
+    public Integer getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(Integer itemId) {
+        this.itemId = itemId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -69,6 +79,7 @@ public class SeckillGood implements Serializable {
         sb.append(", startTime=").append(startTime);
         sb.append(", endTime=").append(endTime);
         sb.append(", seckillPrice=").append(seckillPrice);
+        sb.append(", itemId=").append(itemId);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

@@ -27,4 +27,8 @@ public interface ItemStockMapper {
     int updateByPrimaryKeySelective(ItemStock record);
 
     int updateByPrimaryKey(ItemStock record);
+
+    ItemStock selectByGoodsId(Integer itemId);
+
+    int decreaseStock(Integer id, Integer count);
 }

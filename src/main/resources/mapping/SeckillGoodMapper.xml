@@ -7,6 +7,7 @@
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
     <result column="seckill_price" jdbcType="DECIMAL" property="seckillPrice" />
+    <result column="item_id" jdbcType="INTEGER" property="itemId" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -67,7 +68,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    sec_id, seckill_name, start_time, end_time, seckill_price
+    sec_id, seckill_name, start_time, end_time, seckill_price, item_id
   </sql>
   <select id="selectByExample" parameterType="com.deltaqin.seckill.dataobject.SeckillGoodExample" resultMap="BaseResultMap">
     select
@@ -84,7 +85,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from seckill_good
     where sec_id = #{secId,jdbcType=INTEGER}
@@ -100,10 +101,12 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.deltaqin.seckill.dataobject.SeckillGood">
-    insert into seckill_good (sec_id, seckill_name, start_time, 
-      end_time, seckill_price)
-    values (#{secId,jdbcType=INTEGER}, #{seckillName,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, 
-      #{endTime,jdbcType=TIMESTAMP}, #{seckillPrice,jdbcType=DECIMAL})
+    insert into seckill_good (sec_id, seckill_name, start_time,
+      end_time, seckill_price, item_id
+      )
+    values (#{secId,jdbcType=INTEGER}, #{seckillName,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP},
+      #{endTime,jdbcType=TIMESTAMP}, #{seckillPrice,jdbcType=DECIMAL}, #{itemId,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.deltaqin.seckill.dataobject.SeckillGood">
     insert into seckill_good
@@ -123,6 +126,9 @@
       <if test="seckillPrice != null">
         seckill_price,
       </if>
+      <if test="itemId != null">
+        item_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="secId != null">
@@ -140,6 +146,9 @@
       <if test="seckillPrice != null">
         #{seckillPrice,jdbcType=DECIMAL},
       </if>
+      <if test="itemId != null">
+        #{itemId,jdbcType=INTEGER},
+      </if>
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.deltaqin.seckill.dataobject.SeckillGoodExample" resultType="java.lang.Long">
@@ -147,6 +156,12 @@
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
+  </select>
+  <select id="selectByGoodsId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from seckill_good
+    where item_id = #{goodsId,jdbcType=INTEGER}
   </select>
   <update id="updateByExampleSelective" parameterType="map">
     update seckill_good
@@ -166,6 +181,9 @@
       <if test="record.seckillPrice != null">
         seckill_price = #{record.seckillPrice,jdbcType=DECIMAL},
       </if>
+      <if test="record.itemId != null">
+        item_id = #{record.itemId,jdbcType=INTEGER},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -177,7 +195,8 @@
       seckill_name = #{record.seckillName,jdbcType=VARCHAR},
       start_time = #{record.startTime,jdbcType=TIMESTAMP},
       end_time = #{record.endTime,jdbcType=TIMESTAMP},
-      seckill_price = #{record.seckillPrice,jdbcType=DECIMAL}
+      seckill_price = #{record.seckillPrice,jdbcType=DECIMAL},
+      item_id = #{record.itemId,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -197,6 +216,9 @@
       <if test="seckillPrice != null">
         seckill_price = #{seckillPrice,jdbcType=DECIMAL},
       </if>
+      <if test="itemId != null">
+        item_id = #{itemId,jdbcType=INTEGER},
+      </if>
     </set>
     where sec_id = #{secId,jdbcType=INTEGER}
   </update>
@@ -205,7 +227,8 @@
     set seckill_name = #{seckillName,jdbcType=VARCHAR},
       start_time = #{startTime,jdbcType=TIMESTAMP},
       end_time = #{endTime,jdbcType=TIMESTAMP},
-      seckill_price = #{seckillPrice,jdbcType=DECIMAL}
+      seckill_price = #{seckillPrice,jdbcType=DECIMAL},
+      item_id = #{itemId,jdbcType=INTEGER}
     where sec_id = #{secId,jdbcType=INTEGER}
   </update>
 </mapper>
