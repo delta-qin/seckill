@@ -11,6 +11,7 @@ import java.io.Serializable;
  * @author deltaqin
  * @date 2021/6/10 下午8:01
  */
+
 public class UserModel implements Serializable {
     private Integer id;
 
@@ -96,5 +97,19 @@ public class UserModel implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "UserModel{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", gender=" + gender +
+                ", age=" + age +
+                ", telphone='" + telphone + '\'' +
+                ", thirdPartyId='" + thirdPartyId + '\'' +
+                ", password='" + password + '\'' +
+                ", registerMode='" + registerMode + '\'' +
+                '}';
     }
 }
