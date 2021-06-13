@@ -1,6 +1,5 @@
 package com.deltaqin.seckill.controller;
 
-import com.deltaqin.seckill.common.constant.GlobalConstant;
 import com.deltaqin.seckill.common.entities.ResultType;
 import com.deltaqin.seckill.common.exception.CommonExceptionImpl;
 import com.deltaqin.seckill.common.exception.ExceptionTypeEnum;
@@ -10,14 +9,12 @@ import com.deltaqin.seckill.model.UserModel;
 import com.deltaqin.seckill.service.UserService;
 import com.deltaqin.seckill.vo.UserVo;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
@@ -28,7 +25,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -49,8 +45,6 @@ public class UserController {
 
     @Autowired
     private HttpServletRequest httpServletRequest;
-
-
 
     @Autowired
     private RedisTemplate redisTemplate;
@@ -125,7 +119,6 @@ public class UserController {
         return ResultType.create(null);
     }
 
-    // 获取验证码是用session实现的，登录之后使用token实现
     @ApiOperation(value = "登录之前先获取验证码", notes = "使用返回的验证码登录。图片显示在用户登录页面")
     // produces = "image/jpeg" 不设置就是乱码
     @RequestMapping(value = "/getotp",method = {RequestMethod.GET},consumes={CONTENT_TYPE_FORMED}, produces = "image/jpeg")
@@ -139,7 +132,9 @@ public class UserController {
         Map<String,Object> map = CodeUtil.generateCodeAndPic();
 
         log.info("telphone:" + telphone + ", otpCode:" + map.get("code"));
-        httpServletRequest.getSession().setAttribute(telphone, map.get("code"));
+        //httpServletRequest.getSession().setAttribute(telphone, map.get("code"));
+        redisTemplate.opsForValue().set(telphone, map.get("code"));
+        redisTemplate.expire(telphone, 5, TimeUnit.MINUTES);
 
         try {
             // 不设置这knife4j就是下载文件

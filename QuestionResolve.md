@@ -38,3 +38,40 @@ https://stackoverflow.com/questions/51048707/spring-boot-handling-nohandlerfound
     }
 ```
 https://blog.csdn.net/qq_38380025/article/details/84936466
+
+## knife4j想要显示返回的验证码
+
+默认返回的是乱码
+
+1. @RequestMapping 位置添加 , produces = "image/jpeg")
+```
+httpServletResponse.setContentType("image/jpeg");
+ImageIO.write((RenderedImage) map.get("pic"), "jpeg", httpServletResponse.getOutputStream());
+```
+
+## @Autowired HttpServletResponse报错
+spring团队只让 HttpServletRequest 有自动装配功能，排除 HttpServletResponse。spring团队倡导把reqeust、response与其他实例分开。
+
+将其作为方法参数，public void test(HttpServletResponse response){
+
+## SpringBoot + Mybatis 控制台查看执行的SQL日志
+配置文件新增以下配置
+```
+mybatis.configuration.log-impl=org.apache.ibatis.logging.stdout.StdOutImpl
+```
+
+## 启动的时候使用外部的配置文件
+```
+# 不推荐，会覆盖jar里面的
+--spring.config.location=“D:/xxx/system.properties”
+
+# 推荐是互补，注意不可以写配置文件的名字，
+--spring.config.additional-location=“D:/xxx/conf/”
+
+# 实际使用
+ --spring.profiles.active=dev --spring.config.additional-location=/home/xxx/conf/  >nohup.output  2>&1 &
+```
+https://blog.csdn.net/inthat/article/details/105240468
+
+
+

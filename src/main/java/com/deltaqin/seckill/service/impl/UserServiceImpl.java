@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -35,6 +36,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ValidatorUtil validatorUtil;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 校验用户的信息
@@ -101,6 +105,11 @@ public class UserServiceImpl implements UserService {
         UserModel userModel = convertModelFromDo(userInfo, userPassword);
         return userModel;
     }
+
+    // 使用缓存来获用户信息
+    //public UserModel getUserByIdInCache(Integer id) {
+    //    redisTemplate.opsForValue().get()
+    //}
 
     @Override
     public UserModel getUserByPhone(String phone) throws CommonExceptionImpl {

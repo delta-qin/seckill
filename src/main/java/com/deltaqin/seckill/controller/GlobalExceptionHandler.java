@@ -27,13 +27,13 @@ import java.util.Map;
  * 其余所有的异常捕获
  */
 @ControllerAdvice
+@ResponseBody
 public class GlobalExceptionHandler {
 
     private static final String CODE = "errCode";
     private static final String MSG = "errMsg";
 
     @ExceptionHandler(Exception.class)
-    @ResponseBody
     public ResultType handleError(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                                   Exception exception) {
         exception.printStackTrace();
