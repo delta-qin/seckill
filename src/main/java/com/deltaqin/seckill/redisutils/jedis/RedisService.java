@@ -1,4 +1,4 @@
-package com.deltaqin.seckill.redisutils;
+package com.deltaqin.seckill.redisutils.jedis;
 
 import com.alibaba.fastjson.JSON;
 import com.deltaqin.seckill.redisutils.keyprefix.KeyPrefix;

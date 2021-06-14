@@ -6,7 +6,7 @@ import com.deltaqin.seckill.common.exception.ExceptionTypeEnum;
 import com.deltaqin.seckill.common.utils.CodeUtil;
 import com.deltaqin.seckill.common.utils.Encode;
 import com.deltaqin.seckill.model.UserModel;
-import com.deltaqin.seckill.redisutils.RedisService;
+import com.deltaqin.seckill.redisutils.jedis.RedisService;
 import com.deltaqin.seckill.redisutils.keyprefix.UserKeyPrefix;
 import com.deltaqin.seckill.service.UserService;
 import com.deltaqin.seckill.vo.UserVo;
@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
@@ -28,7 +27,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import static com.deltaqin.seckill.common.constant.GlobalConstant.CONTENT_TYPE_FORMED;
 

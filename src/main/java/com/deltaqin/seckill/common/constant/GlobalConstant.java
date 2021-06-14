@@ -6,4 +6,6 @@ package com.deltaqin.seckill.common.constant;
  */
 public  class GlobalConstant {
     public static final String CONTENT_TYPE_FORMED  = "application/x-www-form-urlencoded";
+
+    public static final String TOKEN_KEY_NAME = "token";
 }
