@@ -6,6 +6,8 @@ import com.deltaqin.seckill.common.exception.ExceptionTypeEnum;
 import com.deltaqin.seckill.common.utils.CodeUtil;
 import com.deltaqin.seckill.common.utils.Encode;
 import com.deltaqin.seckill.model.UserModel;
+import com.deltaqin.seckill.redisutils.RedisService;
+import com.deltaqin.seckill.redisutils.keyprefix.UserKeyPrefix;
 import com.deltaqin.seckill.service.UserService;
 import com.deltaqin.seckill.vo.UserVo;
 import io.swagger.annotations.Api;
@@ -47,7 +49,7 @@ public class UserController {
     private HttpServletRequest httpServletRequest;
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisService redisService;
 
     /**
      * 登录之后返回 token
@@ -66,8 +68,12 @@ public class UserController {
             throw new CommonExceptionImpl(ExceptionTypeEnum.USER_LOGIN_FAIL);
         }
 
-        String codeInSession = (String)httpServletRequest.getSession().getAttribute(telPhone);
-        if (StringUtils.isEmpty(codeInSession)) {
+        //String codeInSession = (String)httpServletRequest.getSession().getAttribute(telPhone);
+        //if (StringUtils.isEmpty(codeInSession)) {
+        //}
+
+        String codeInRedis = redisService.get(UserKeyPrefix.getVerificationCode, telPhone, String.class);
+        if (StringUtils.isEmpty(codeInRedis)) {
             throw new CommonExceptionImpl(ExceptionTypeEnum.PARAMETER_VALIDATION_ERROR, "验证码错误");
         }
 
@@ -83,8 +89,10 @@ public class UserController {
         // 使用token+redis实现(v2.0)
         String token = UUID.randomUUID().toString();
         token = token.replace("-", "");
-        redisTemplate.opsForValue().set(token, userModel);
-        redisTemplate.expire(token, 1, TimeUnit.HOURS);
+        // 内部设置了过期时间
+        // 前缀  key  value
+        redisService.set(UserKeyPrefix.getToken, token, userModel);
+
 
         log.info("用户登录: {}" , userModel);
 
@@ -132,9 +140,13 @@ public class UserController {
         Map<String,Object> map = CodeUtil.generateCodeAndPic();
 
         log.info("telphone:" + telphone + ", otpCode:" + map.get("code"));
+        // 使用session
         //httpServletRequest.getSession().setAttribute(telphone, map.get("code"));
-        redisTemplate.opsForValue().set(telphone, map.get("code"));
-        redisTemplate.expire(telphone, 5, TimeUnit.MINUTES);
+        // 使用自带的redisTemplate
+        //redisTemplate.opsForValue().set(telphone, map.get("code"));
+        //redisTemplate.expire(telphone, 5, TimeUnit.MINUTES);
+        // 使用自己封装的redisService
+        redisService.set(UserKeyPrefix.getVerificationCode, telphone, map.get("code"));
 
         try {
             // 不设置这knife4j就是下载文件

@@ -9,6 +9,7 @@ import com.deltaqin.seckill.dao.UserPasswordMapper;
 import com.deltaqin.seckill.dataobject.UserInfo;
 import com.deltaqin.seckill.dataobject.UserPassword;
 import com.deltaqin.seckill.model.UserModel;
+import com.deltaqin.seckill.redisutils.RedisService;
 import com.deltaqin.seckill.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -37,8 +38,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private ValidatorUtil validatorUtil;
 
-    @Autowired
-    private RedisTemplate redisTemplate;
 
     /**
      * 校验用户的信息

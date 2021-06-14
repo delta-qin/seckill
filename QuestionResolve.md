@@ -74,4 +74,11 @@ mybatis.configuration.log-impl=org.apache.ibatis.logging.stdout.StdOutImpl
 https://blog.csdn.net/inthat/article/details/105240468
 
 
+## 关于springboot-Redis和jedis的选择
 
+https://blog.csdn.net/houpeibin2012/article/details/105839651
+
+## 关于redis的连接池的选择
+使用jedis的话就要把lettuce去掉
+
+https://blog.csdn.net/ankeway/article/details/86544475
