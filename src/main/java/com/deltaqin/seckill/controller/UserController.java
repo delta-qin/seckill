@@ -69,7 +69,6 @@ public class UserController {
         //String codeInSession = (String)httpServletRequest.getSession().getAttribute(telPhone);
         //if (StringUtils.isEmpty(codeInSession)) {
         //}
-
         String codeInRedis = redisService.get(UserKeyPrefix.getVerificationCode, telPhone, String.class);
         if (StringUtils.isEmpty(codeInRedis)) {
             throw new CommonExceptionImpl(ExceptionTypeEnum.PARAMETER_VALIDATION_ERROR, "验证码错误");
@@ -90,6 +89,7 @@ public class UserController {
         // 内部设置了过期时间
         // 前缀  key  value
         redisService.set(UserKeyPrefix.getToken, token, userModel);
+        redisService.set(UserKeyPrefix.getId, String.valueOf(userModel.getId()), userModel);
 
 
         log.info("用户登录: {}" , userModel);
@@ -129,10 +129,6 @@ public class UserController {
     // produces = "image/jpeg" 不设置就是乱码
     @RequestMapping(value = "/getotp",method = {RequestMethod.GET},consumes={CONTENT_TYPE_FORMED}, produces = "image/jpeg")
     public void getOtpCode(@RequestParam(name = "telphone") String telphone, HttpServletResponse httpServletResponse) throws CommonExceptionImpl {
-        //Random random = new Random();
-        //int randomInt = random.nextInt(99999);
-        //randomInt += 100000;
-        //String otpCode = String.valueOf(randomInt);
 
         // 返回验证码的图片
         Map<String,Object> map = CodeUtil.generateCodeAndPic();
@@ -174,6 +170,8 @@ public class UserController {
         return ResultType.create(userVo);
 
     }
+
+
 
     @ApiOperation(value = "使用电话获取用户", notes = "获取用户")
     @RequestMapping(value = "/getbyphone", method = RequestMethod.GET)

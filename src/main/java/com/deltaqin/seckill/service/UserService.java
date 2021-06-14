@@ -18,4 +18,6 @@ public interface UserService {
     UserModel getUserById(Integer id) throws CommonExceptionImpl;
 
     UserModel getUserByPhone(String phone) throws CommonExceptionImpl;
+
+    UserModel getUserByIdInCache(Integer userId);
 }

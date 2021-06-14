@@ -10,8 +10,13 @@ public class SeckillKeyPrefix extends BaseKeyPrefix {
         super(prefix, expireSeconds);
     }
 
-    public static SeckillKeyPrefix isSeckillEnd = new SeckillKeyPrefix("se", 0);
+    //public static SeckillKeyPrefix isSeckillEnd = new SeckillKeyPrefix("se", 0);
     public static SeckillKeyPrefix getSeckillPath = new SeckillKeyPrefix("sp", 60);
     public static SeckillKeyPrefix getSeckillCode = new SeckillKeyPrefix("sc", 300);
+    public static SeckillKeyPrefix getSeckillToken = new SeckillKeyPrefix("st", 300);
+    public static SeckillKeyPrefix getSeckillItem = new SeckillKeyPrefix("si", 0);
+    public static SeckillKeyPrefix getSeckillStockDoor = new SeckillKeyPrefix("ssd", 0);
+    // 当前还有的库存
+    public static SeckillKeyPrefix getSeckillStock = new SeckillKeyPrefix("ss", 0);
 
 }

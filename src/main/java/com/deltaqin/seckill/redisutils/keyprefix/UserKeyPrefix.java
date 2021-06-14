@@ -9,6 +9,7 @@ public class UserKeyPrefix extends BaseKeyPrefix{
     private static final int CODE_EXPIRE = 60 * 5;
     public static UserKeyPrefix getVerificationCode = new UserKeyPrefix("code", CODE_EXPIRE) ;
     public static UserKeyPrefix getToken = new UserKeyPrefix("tk", TOKEN_EXPIRE) ;
+    public static UserKeyPrefix getId = new UserKeyPrefix("id", TOKEN_EXPIRE) ;
     public static UserKeyPrefix getByNickName = new UserKeyPrefix("nickName",0);
 
     public UserKeyPrefix(String prefix, int expireSeconds ) {

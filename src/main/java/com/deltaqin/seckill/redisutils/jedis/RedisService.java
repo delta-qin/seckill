@@ -219,6 +219,17 @@ public class RedisService {
         }
     }
 
+    public Long incr(KeyPrefix prefix, String key, int count ) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            String realPrefix = prefix.getPrefix() + key;
+            return jedis.incrBy(realPrefix, count);
+        } finally {
+            returnToPool(jedis);
+        }
+    }
+
     public Long decr(KeyPrefix prefix, String key) {
         Jedis jedis = null;
         try {
@@ -230,6 +241,18 @@ public class RedisService {
             returnToPool(jedis);
         }
     }
+    public Long decr(KeyPrefix prefix, String key, int count) {
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            String realKey = prefix.getPrefix() + key;
+            Long decr = jedis.decrBy(realKey, count);
+            return decr;
+        } finally {
+            returnToPool(jedis);
+        }
+    }
+
 
 
 

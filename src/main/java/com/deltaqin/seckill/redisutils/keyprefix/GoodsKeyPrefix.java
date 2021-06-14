@@ -13,11 +13,12 @@ public class GoodsKeyPrefix extends BaseKeyPrefix {
         super(prefix, expire);
     }
 
-    public static GoodsKeyPrefix goodsList = new GoodsKeyPrefix(60, "glist");
-    public static GoodsKeyPrefix goodsDetail = new GoodsKeyPrefix(60, "glist");
+    public static GoodsKeyPrefix goodsList = new GoodsKeyPrefix(60, "gl");
+    public static GoodsKeyPrefix goodsDetail = new GoodsKeyPrefix(60, "gd");
 
     // 库存一直保存，修改的时候才会刷新
     // 0 就是用不过期
-    public static GoodsKeyPrefix goodsStock = new GoodsKeyPrefix(0, "gstock");
+    public static GoodsKeyPrefix goodsStock = new GoodsKeyPrefix(0, "gs");
+    public static GoodsKeyPrefix goodsInvalid = new GoodsKeyPrefix(0, "gi");
 
 }

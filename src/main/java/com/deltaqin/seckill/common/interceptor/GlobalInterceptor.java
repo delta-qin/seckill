@@ -8,7 +8,6 @@ import com.deltaqin.seckill.model.UserModel;
 import com.deltaqin.seckill.redisutils.jedis.RedisService;
 import com.deltaqin.seckill.redisutils.keyprefix.AccessKeyPrefix;
 import com.deltaqin.seckill.redisutils.keyprefix.UserKeyPrefix;
-import com.deltaqin.seckill.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +70,9 @@ public class GlobalInterceptor extends HandlerInterceptorAdapter {
                 }
                 // 否则设置一下当前 key 是用户专属的 key，而不是浏览商品页那种统一的key
                 key += "_" + user.getName();
+
+                // 用户信息设置到ThreadLocal
+                UserInfoThreadLocal.setUser(user);
             }
 
             // 大于0 的时候才需要限流
