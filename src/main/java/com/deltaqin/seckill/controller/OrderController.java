@@ -121,36 +121,40 @@ public class OrderController {
             }
         }
 
-
-        // 队列化泄洪，只有20个线程可以执行，其余的都在线程池的阻塞队列里面。
-        Future<Object> future = executorService.submit(new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                // 初始化流水
-                // value = "1表示初始状态，2表示下单扣减库存成功，3表示下单回滚"
-                // 在订单落库之后使用流水的id流水设置为2
-                String s = goodsService.initStockLog(goodsId, count);
-
-                // 同步下单
-                orderService.createOrder(userModel.getId(), goodsId, secKillId, count, s);
-
-                // TODO 事务消息 v3.0
-                // 同步下单的时候是在创建订单之后发送一个扣减数据库消息，是同步执行的。
-                // 但是事务消息可以实现 减数据库库存发消息 和 执行本地创建订单事务 并行 执行。更加节省时间
-                return null;
-
-            }
-        });
-
-        try {
-            future.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            throw new CommonExceptionImpl(ExceptionTypeEnum.PARAMETER_VALIDATION_ERROR);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-            throw new CommonExceptionImpl(ExceptionTypeEnum.PARAMETER_VALIDATION_ERROR);
-        }
+        // v3.0不需要这个了
+        //// 队列化泄洪，只有20个线程可以执行，其余的都在线程池的阻塞队列里面。
+        //Future<Object> future = executorService.submit(new Callable<Object>() {
+        //    @Override
+        //    public Object call() throws Exception {
+        //        // 初始化流水
+        //        // value = "1表示初始状态，2表示下单扣减库存成功，3表示下单回滚"
+        //        // 在订单落库之后使用流水的id流水设置为2
+        //        String stockLogId = goodsService.initStockLog(goodsId, count);
+        //
+        //        // 同步下单 +预减库存+ 异步减库存 v2.0
+        //        //orderService.createOrder(userModel.getId(), goodsId, secKillId, count, s);
+        //
+        //        //  同步下单 并行 事务消息 + 预减库存 + 异步减库存 v3.0
+        //        // 同步下单的时候是在创建订单之后发送一个扣减数据库消息，是同步执行的。
+        //        // 但是事务消息可以实现 减数据库库存发消息 和 执行本地创建订单事务 并行 执行。更加节省时间
+        //        boolean mqRes = mqProducer.transactionAsyncDecreaseStock(userModel.getId(), goodsId, secKillId, count, stockLogId);
+        //        if (!mqRes){
+        //            throw new CommonExceptionImpl(ExceptionTypeEnum.MQ_SEND_FAIL);
+        //        }
+        //        return null;
+        //
+        //    }
+        //});
+        //
+        //try {
+        //    future.get();
+        //} catch (InterruptedException e) {
+        //    e.printStackTrace();
+        //    throw new CommonExceptionImpl(ExceptionTypeEnum.PARAMETER_VALIDATION_ERROR);
+        //} catch (ExecutionException e) {
+        //    e.printStackTrace();
+        //    throw new CommonExceptionImpl(ExceptionTypeEnum.PARAMETER_VALIDATION_ERROR);
+        //}
 
         return ResultType.create(null);
     }
@@ -158,7 +162,7 @@ public class OrderController {
     @ApiOperation(value = "生成秒杀下单验证码测试接口", notes = "订单接口")
     @RequestMapping(value = "/generateverifycode", method = RequestMethod.GET)
     public void generateVerifyCode(HttpServletResponse httpServletResponse) throws CommonExceptionImpl, IOException {
-        String token = httpServletRequest.getParameterMap().get("token")[0];
+        String token = httpServletRequest.getHeader("token");
         if (StringUtils.isEmpty(token)) {
             throw new CommonExceptionImpl(ExceptionTypeEnum.USER_NOT_LOGIN);
         }
@@ -180,7 +184,7 @@ public class OrderController {
                   @RequestParam(name="promoId")Integer seckillId,
                   @RequestParam(name="verifyCode")String verifyCode) throws CommonExceptionImpl {
         //获取用户的信息
-        String token = httpServletRequest.getParameterMap().get("token")[0];
+        String token = httpServletRequest.getHeader("token");
         if (StringUtils.isEmpty(token)) {
             throw new CommonExceptionImpl(ExceptionTypeEnum.USER_NOT_LOGIN);
         }
