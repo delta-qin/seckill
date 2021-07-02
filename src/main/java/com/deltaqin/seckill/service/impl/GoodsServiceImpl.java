@@ -161,7 +161,7 @@ public class GoodsServiceImpl implements GoodsService {
         GoodsModel goodsModel = null;
         // 先从本地缓存里面读取
         goodsModel = (GoodsModel)guavaLocalCacheService.getFromLocalCache(
-                LocalGoodsKeyPrefix.getGoodDetail.getPrefix() + String.valueOf(id));
+                LocalGoodsKeyPrefix.getGoodDetail.getPrefix() + id);
         if (goodsModel == null) {
             // 再去Redis里面读取
             goodsModel = redisService.get(GoodsKeyPrefix.goodsDetail, String.valueOf(id), GoodsModel.class);
