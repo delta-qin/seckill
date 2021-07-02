@@ -11,9 +11,9 @@ public interface SeckillService {
 
     SeckillModel getSeckillByGoodId(Integer goodsId) throws CommonExceptionImpl;
 
-    void publishSeckill(Integer id);
+    void publishSeckill(Integer id) throws CommonExceptionImpl;
 
-    String generateSecKillToken(Integer id, Integer goodsId, Integer userId);
+    String generateSecKillToken(Integer id, Integer goodsId, Integer userId) throws CommonExceptionImpl;
 
     void createSecKill(SeckillModel seckillModel) throws CommonExceptionImpl;
 }

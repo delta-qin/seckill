@@ -16,7 +16,7 @@ public enum ExceptionTypeEnum implements CommonException {
     // 6 开头是交易的信息错误
     STOCK_NOT_ENOUGH(60001,"库存不足"),
     MQ_SEND_FAIL(60002,"库存异步消息失败"),
-    RATE_LIMIT(60003,"防刷限制，请稍后再试"),
+    RATE_LIMIT(60003,"防刷限制，请稍后再试")
     ;
 
     private int errCode;

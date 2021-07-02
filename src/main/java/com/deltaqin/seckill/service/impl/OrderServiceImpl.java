@@ -15,11 +15,14 @@ import com.deltaqin.seckill.model.UserModel;
 import com.deltaqin.seckill.service.GoodsService;
 import com.deltaqin.seckill.service.OrderService;
 import com.deltaqin.seckill.service.UserService;
+import lombok.SneakyThrows;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -54,30 +57,34 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderModel createOrder(Integer userId, Integer goodsId, Integer seckillId, Integer count, String stockLogId) throws CommonExceptionImpl {
+
         // 验证商品信息
-        GoodsModel goodsModel = goodsService.getById(goodsId);
+        GoodsModel goodsModel = goodsService.getByIdInCache(goodsId);
         if (goodsModel == null) {
             throw new CommonExceptionImpl(ExceptionTypeEnum.PARAMETER_VALIDATION_ERROR, "商品不存在");
         }
 
-        // 验证用户信息
-        UserModel userModel = userService.getUserById(userId);
-        if (userModel == null) {
-            throw new CommonExceptionImpl(ExceptionTypeEnum.PARAMETER_VALIDATION_ERROR, "用户信息不存在");
-        }
+        // 验证用户信息(controller校验了）
+        //UserModel userModel = userService.getUserById(userId);
+        //if (userModel == null) {
+        //    throw new CommonExceptionImpl(ExceptionTypeEnum.PARAMETER_VALIDATION_ERROR, "用户信息不存在");
+        //}
 
         // 这里校验使用了商品的秒杀信息，所以必须在service里面处理
-        if (seckillId != null) {
-            if (seckillId.intValue() != goodsModel.getSeckillModel().getSecId().intValue() ) {
-                throw new CommonExceptionImpl(ExceptionTypeEnum.PARAMETER_VALIDATION_ERROR,"秒杀信息不正确");
-            } else if (goodsModel.getSeckillModel().getItemStatus().intValue() == 1) {
-                throw new CommonExceptionImpl(ExceptionTypeEnum.PARAMETER_VALIDATION_ERROR, "秒杀还没开始");
-            } else if (goodsModel.getSeckillModel().getItemStatus().intValue() == 3) {
-                throw new CommonExceptionImpl(ExceptionTypeEnum.PARAMETER_VALIDATION_ERROR, "秒杀已经结束");
-            }
-        }
+        // 不会在Controller里面获取实际的商品信息。
+        // 这个不需要了。校验会放在用户获取秒杀令牌的时候。获取到令牌就说明此时秒杀开始了。获取令牌里面有校验逻辑
+        //if (seckillId != null) {
+        //    if (seckillId.intValue() != goodsModel.getSeckillModel().getSecId().intValue() ) {
+        //        throw new CommonExceptionImpl(ExceptionTypeEnum.PARAMETER_VALIDATION_ERROR,"秒杀信息不正确");
+        //    } else if (goodsModel.getSeckillModel().getItemStatus().intValue() == 1) {
+        //        throw new CommonExceptionImpl(ExceptionTypeEnum.PARAMETER_VALIDATION_ERROR, "秒杀还没开始");
+        //    } else if (goodsModel.getSeckillModel().getItemStatus().intValue() == 3) {
+        //        throw new CommonExceptionImpl(ExceptionTypeEnum.PARAMETER_VALIDATION_ERROR, "秒杀已经结束");
+        //    }
+        //}
 
-        // 减库存
+        // 落单减库存（不会超卖）/支付减库存（但是无法保证支付之后还有库存，恶意下单，即使超卖）
+        // 这里就是预减库存，也就是减去的是缓存的，数据库的会在最后调用
         boolean b = goodsService.decreaseStock(goodsId, count);
         if (!b) {
             throw new CommonExceptionImpl(ExceptionTypeEnum.STOCK_NOT_ENOUGH);
@@ -97,13 +104,14 @@ public class OrderServiceImpl implements OrderService {
         }
         orderModel.setSeckillId(seckillId);
         orderModel.setTotalPrice(orderModel.getItemPrice().multiply(new BigDecimal(count)));
+        // 订单号
         orderModel.setOrderId(generateOrderId());
         // 转换为DO
         OrderInfo orderInfo = convertOrderInfoFromModel(orderModel);
         orderInfoMapper.insertSelective(orderInfo);
 
         // 商品的销量
-        goodsService.increase(goodsId, count);
+        goodsService.increaseSales(goodsId, count);
 
         // 设置流水状态为成功
         // value = "1表示初始状态，2表示下单扣减库存成功，3表示下单回滚"
@@ -114,6 +122,20 @@ public class OrderServiceImpl implements OrderService {
 
         stockLog.setItemStatus((short) 2);
         stockLogMapper.updateByPrimaryKey(stockLog);
+
+        // 发送异步消息扣减数据库里面的库存消息
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @SneakyThrows
+            @Override
+            public void afterCommit() {
+                boolean mqRes = goodsService.asyncDecreaseStock(goodsId, count);
+                if (!mqRes) {
+                    // 修复库存
+                    goodsService.increase(goodsId, count);
+                    throw new CommonExceptionImpl(ExceptionTypeEnum.MQ_SEND_FAIL);
+                }
+            }
+        });
 
         return orderModel;
     }

@@ -21,6 +21,10 @@ public interface GoodsService {
     // 扣减库存
     boolean decreaseStock(Integer id, Integer count);
 
+
+    // 异步扣减库存
+    boolean asyncDecreaseStock(Integer id, Integer count);
+
     // 增加库存
     boolean increase(Integer id , Integer count);
 
@@ -28,4 +32,7 @@ public interface GoodsService {
     // 初始化库存流水
     String initStockLog(Integer id, Integer count);
 
+    GoodsModel getByIdInCache(Integer goodsId) throws CommonExceptionImpl;
+
+    void increaseSales(Integer goodsId, Integer count);
 }

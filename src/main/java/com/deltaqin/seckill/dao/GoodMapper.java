@@ -27,4 +27,7 @@ public interface GoodMapper {
     int updateByPrimaryKeySelective(Good record);
 
     int updateByPrimaryKey(Good record);
+
+    // 这里写了@Param之后就不用在mapper里面指定参数类型了
+    void increaseSales(@Param("id") Integer goodsId, @Param("count") Integer count);
 }

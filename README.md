@@ -21,7 +21,7 @@
 
 ## 项目改进记录
 
-### v1.0（2021-6-12 结束）
+### v1.0（已实现）
 
 - 基本功能实现（使用数据库实现）
     - 用户模块
@@ -29,19 +29,16 @@
     - 订单模块
     - 秒杀模块
 
-### v2.0
+### v2.0（已实现）
 
 - 使用缓存优化
 - 固定大小的线程池的无界队列缓存用户请求
+- 兼容旧的版本，没有删除redisTemplate。同时增加了自定义的redisService
 
-### v3.0
+### v3.0（已实现）
 
 - mq升级：
 - 事务消息
-
-## v4.0
-
-- 缓存异步通知更新
 
 ## v5.0
 
@@ -64,25 +61,25 @@
 │       └── deltaqin
 │           └── seckill
 │               ├── SecKillApplcation.java
-│               ├── common
-│               │   ├── constant
-│               │   ├── entities
-│               │   ├── exception
-│               │   ├── serializer
-│               │   ├── utils
-│               │   └── validator
-│               ├── config
-│               ├── controller
-│               ├── dao
-│               ├── dataobject
-│               ├── model
-│               ├── service
+│               ├── common 
+│               │   ├── constant  常量封装
+│               │   ├── entities  封装返回类型
+│               │   ├── exception 封装异常类型
+│               │   ├── serializer 自定义时间序列化方式
+│               │   ├── utils 常用工具类封装
+│               │   └── validator 参数校验工具
+│               ├── config Redis以及文档的相关配置
+│               ├── controller 接口层
+│               ├── dao 基础设施层
+│               ├── dataobject 实体对象
+│               ├── model 领域模型
+│               ├── service 逻辑层
 │               │   └── impl
-│               └── vo
-└── resources
-    ├── application-dev.properties
-    ├── application-prod.properties
-    ├── application.properties
-    └── mybatis-generator.xml
+│               └── vo 返回视图对象
+└── resources 
+    ├── application-dev.properties 开发相关配置
+    ├── application-prod.properties 部署相关配置
+    ├── application.properties 
+    └── mybatis-generator.xml 基础设施层生成配置
 
 ```

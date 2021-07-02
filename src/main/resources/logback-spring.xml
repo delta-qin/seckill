@@ -2,7 +2,7 @@
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
     <contextName>sys</contextName>
     <springProperty scope="context" name="springAppName" source="spring.application.name"/>
-    <property name="log.path" value="log/sys-mybatisgen" />
+    <property name="log.path" value="log" />
     <property name="log.maxHistory" value="15" />
     <property name="log.colorPattern" value="%magenta(%d{yyyy-MM-dd HH:mm:ss}) %highlight(%-5level) %boldCyan([${springAppName:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}]) %yellow(%thread) %green(%logger) %msg%n"/>
     <property name="log.pattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5level [${springAppName:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}] %thread %logger %msg%n"/>
@@ -29,6 +29,11 @@
             <onMismatch>DENY</onMismatch>
         </filter>
     </appender>
+
+<!--    配置执行的SQL语句记录-->
+    <logger name="com.deltaqin.seckill.dao" level="debug" additivity="false">
+<!--        <appender-ref ref="STDOUT"/>-->
+    </logger>
 
     <appender name="file_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">

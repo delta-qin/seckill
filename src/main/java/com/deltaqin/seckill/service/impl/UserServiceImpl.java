@@ -1,5 +1,6 @@
 package com.deltaqin.seckill.service.impl;
 
+import com.deltaqin.seckill.common.entities.ResultType;
 import com.deltaqin.seckill.common.exception.CommonExceptionImpl;
 import com.deltaqin.seckill.common.exception.ExceptionTypeEnum;
 import com.deltaqin.seckill.common.validator.ValidationResult;
@@ -9,6 +10,8 @@ import com.deltaqin.seckill.dao.UserPasswordMapper;
 import com.deltaqin.seckill.dataobject.UserInfo;
 import com.deltaqin.seckill.dataobject.UserPassword;
 import com.deltaqin.seckill.model.UserModel;
+import com.deltaqin.seckill.redisutils.jedis.RedisService;
+import com.deltaqin.seckill.redisutils.keyprefix.UserKeyPrefix;
 import com.deltaqin.seckill.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 /**
@@ -35,6 +39,10 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ValidatorUtil validatorUtil;
+
+    @Autowired
+    private RedisService redisService;
+
 
     /**
      * 校验用户的信息
@@ -102,6 +110,8 @@ public class UserServiceImpl implements UserService {
         return userModel;
     }
 
+
+
     @Override
     public UserModel getUserByPhone(String phone) throws CommonExceptionImpl {
         //userInfoMapper.selectByPrimaryKey(new UserInfoKey());
@@ -112,6 +122,14 @@ public class UserServiceImpl implements UserService {
 
         UserModel userModel = convertModelFromDo(userInfo, null);
         return userModel;
+    }
+
+    // 注意缓存里面没有就是登录失效 ，需要重新登录
+    @Override
+    public UserModel getUserByIdInCache(Integer userId) {
+
+        return redisService.get(UserKeyPrefix.getId, String.valueOf(userId), UserModel.class);
+
     }
 
     private UserModel convertModelFromDo(UserInfo userInfo, UserPassword userPassword) {

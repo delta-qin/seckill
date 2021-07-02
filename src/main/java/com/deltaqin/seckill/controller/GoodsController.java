@@ -6,8 +6,12 @@ import com.deltaqin.seckill.common.exception.CommonExceptionImpl;
 import com.deltaqin.seckill.common.exception.ExceptionTypeEnum;
 import com.deltaqin.seckill.common.validator.ValidationResult;
 import com.deltaqin.seckill.common.validator.ValidatorUtil;
+import com.deltaqin.seckill.localcache.GuavaLocalCacheServiceImpl;
+import com.deltaqin.seckill.localcache.keyprefix.LocalGoodsKeyPrefix;
 import com.deltaqin.seckill.model.GoodsModel;
 import com.deltaqin.seckill.model.SeckillModel;
+import com.deltaqin.seckill.redisutils.jedis.RedisService;
+import com.deltaqin.seckill.redisutils.keyprefix.GoodsKeyPrefix;
 import com.deltaqin.seckill.service.GoodsService;
 import com.deltaqin.seckill.service.SeckillService;
 import com.deltaqin.seckill.vo.GoodsVo;
@@ -43,6 +47,12 @@ public class GoodsController {
     @Autowired
     private ValidatorUtil validatorUtil;
 
+    @Autowired
+    private RedisService redisService;
+
+    @Autowired
+    private GuavaLocalCacheServiceImpl guavaLocalCacheService;
+
 
     @RequestMapping(value = "/create", method = RequestMethod.POST, consumes = GlobalConstant.CONTENT_TYPE_FORMED)
     @ApiOperation(value = "创建商品测试接口", notes = "商品接口")
@@ -64,13 +74,11 @@ public class GoodsController {
         return ResultType.create(goodsVo);
     }
 
+    // v2.0 实现从缓存以及本地缓存读取
     @RequestMapping(value = "/get", method = RequestMethod.GET)
     @ApiOperation(value = "获取商品详情测试接口", notes = "商品接口")
     public ResultType getGoods(@RequestParam(name = "id") Integer id) throws CommonExceptionImpl {
-        GoodsModel goodsModel = goodsService.getById(id);
-        if (goodsModel == null) {
-            throw new CommonExceptionImpl(ExceptionTypeEnum.PARAMETER_VALIDATION_ERROR, "商品不存在");
-        }
+        GoodsModel goodsModel = goodsService.getByIdInCache(id);
         GoodsVo goodsVo = convertGoodsVoFromModel(goodsModel);
         return ResultType.create(goodsVo);
     }
@@ -82,6 +90,7 @@ public class GoodsController {
         if (goodsList == null) {
             throw new CommonExceptionImpl(ExceptionTypeEnum.UNKNOW_ERROR, "商品为列表为空");
         }
+        // 使用Stream流将数据直接转换为需要的类型
         List<GoodsVo> collect = goodsList.stream().map(item -> {
             GoodsVo goodsVo = convertGoodsVoFromModel(item);
             return goodsVo;
@@ -89,12 +98,14 @@ public class GoodsController {
         return ResultType.create(collect);
     }
 
-    // TODO 活动发布前预热到缓存
-    public ResultType publishSecKill(){
+    //  活动发布前预热到缓存
+    @RequestMapping(value = "/publishpromo",method = {RequestMethod.GET})
+    public ResultType publishSecKill(@RequestParam(name = "id")Integer id) throws CommonExceptionImpl {
+        seckillService.publishSeckill(id);
         return ResultType.create(null);
     }
 
-    // TODO 增加秒杀活动
+    //  增加秒杀活动
     @ApiOperation(value = "创建秒杀活动测试接口", notes = "商品接口")
     @RequestMapping(value = "/createSec", method = RequestMethod.POST)
     public ResultType createSecKill(@RequestParam(name = "name") String name,
